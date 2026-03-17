@@ -1,0 +1,71 @@
+{
+  "name": "ljg-skills",
+  "displayName": "LJG Skills Collection",
+  "description": "Personal Claude Code skills collection for paper reading, content casting, and writing workflows",
+  "version": "1.0.0",
+  "author": {
+    "name": "lijigang",
+    "url": "https://github.com/lijigang"
+  },
+  "repository": "https://github.com/MatthewYe/ljg-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "paper-reading",
+    "academic",
+    "content-casting",
+    "visualization",
+    "writing",
+    "productivity"
+  ],
+  "categories": [
+    "Productivity",
+    "Research",
+    "Content Creation"
+  ],
+  "skills": [
+    {
+      "name": "ljg-card",
+      "description": "Content caster - transforms content into PNG visuals (long card, infograph, poster)",
+      "version": "1.6.0"
+    },
+    {
+      "name": "ljg-paper",
+      "description": "Academic paper analysis pipeline for non-academics",
+      "version": "4.3.0"
+    },
+    {
+      "name": "ljg-paper-flow",
+      "description": "Paper workflow - reads papers and generates cards in one go",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ljg-plain",
+      "description": "Plain language rewriter - makes complex content accessible",
+      "version": "5.0.0"
+    },
+    {
+      "name": "ljg-skill-map",
+      "description": "Visual overview of all installed skills",
+      "version": "1.0.0"
+    },
+    {
+      "name": "ljg-word",
+      "description": "English word deep-dive and mastery tool",
+      "version": "1.0.1"
+    },
+    {
+      "name": "ljg-writes",
+      "description": "Writing engine for thinking through ideas",
+      "version": "4.1.0"
+    }
+  ],
+  "requirements": {
+    "note": "ljg-card requires Playwright for screenshot capture",
+    "install": "bash scripts/install.sh"
+  },
+  "installation": {
+    "marketplace": "/claude marketplace install ljg-skills",
+    "manual": "git clone https://github.com/MatthewYe/ljg-skills.git ~/.claude/plugins/ljg-skills"
+  }
+}
