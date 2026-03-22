@@ -9,6 +9,7 @@ My custom skills for [Claude Code](https://docs.anthropic.com/en/docs/claude-cod
 | **ljg-card** | Content caster — transforms content into PNG visuals (long card, infograph, poster). Infograph mode uses a content-adaptive design system: the AI analyzes content density, structure, and emotion to generate unique visual compositions from scratch — no fixed template, style serves thought. |
 | **ljg-paper** | Paper reader — academic paper analysis pipeline |
 | **ljg-plain** | Plain language rewriter — makes complex content accessible |
+| **ljg-rank** | 降秩引擎 — decomposes any domain to its irreducible generators (秩). Strips a field down to the minimum independent forces that generate all observable phenomena. |
 | **ljg-x-download** | X media downloader — download images and videos from X/Twitter posts to ~/Downloads |
 | **ljg-skill-map** | Skill map viewer — visual overview of all installed skills |
 | **ljg-word** | English word mastery — deep-dive word deconstruction |
