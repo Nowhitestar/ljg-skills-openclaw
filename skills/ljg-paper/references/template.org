@@ -14,7 +14,7 @@
 
 * 翻译
 
-#+ATTR_ORG: :width 800
+#+ATTR_ORG: :width 1200
 [[file:images/{identifier}--paper-{简短标题}-overview.png]]
 
 {把核心想法讲到外行能跟上。形式自由——类比、图、例子、递进讲解，用最适合的方式。}
