@@ -7,11 +7,17 @@
 使用 [skills CLI](https://github.com/vercel-labs/skills)（基于 `npx`）一行安装：
 
 ```bash
-# 安装全部技能（全局）
+# 安装全部技能（全局，org-mode 格式）
 npx skills add lijigang/ljg-skills -g --all
+
+# 安装全部技能（Markdown 格式，适用于 Obsidian / VSCode / Notion 等）
+npx skills add lijigang/ljg-skills#md -g --all
 
 # 安装单个技能
 npx skills add lijigang/ljg-skills -g --skill ljg-card
+
+# 安装单个技能（Markdown 格式）
+npx skills add lijigang/ljg-skills#md -g --skill ljg-card
 
 # 安装多个指定技能
 npx skills add lijigang/ljg-skills -g --skill ljg-card --skill ljg-learn
@@ -27,6 +33,7 @@ npx skills add lijigang/ljg-skills -l
 | `-g` | 全局安装到 `~/.claude/skills/`（推荐）。不加则装到当前项目 `.claude/skills/` |
 | `--skill <name>` | 指定安装某个技能，可重复使用 |
 | `--all` | 安装仓库内全部技能 |
+| `#md` | 从 `md` branch 安装 Markdown 格式版本（默认为 org-mode） |
 | `-l` | 仅列出可用技能，不安装 |
 
 ### ljg-card 依赖
@@ -40,7 +47,11 @@ cd ~/.claude/skills/ljg-card && npm install && npx playwright install chromium
 ### 替代方式：git clone
 
 ```bash
+# org-mode 版本
 git clone https://github.com/lijigang/ljg-skills.git ~/.claude/plugins/ljg-skills
+
+# Markdown 版本
+git clone -b md https://github.com/lijigang/ljg-skills.git ~/.claude/plugins/ljg-skills
 ```
 
 ## 技能
@@ -70,3 +81,12 @@ git clone https://github.com/lijigang/ljg-skills.git ~/.claude/plugins/ljg-skill
 |--------|--------|------|
 | **ljg-paper-flow** | ljg-paper → ljg-card -c | 读论文 + 做漫画卡片一气呵成 |
 | **ljg-word-flow** | ljg-word → ljg-card -i | 单词深度分析 + 信息图卡片一气呵成 |
+
+## 输出格式
+
+技能提供两种输出格式，通过不同 branch 安装，功能完全相同：
+
+| Branch | 格式 | 适用场景 |
+|--------|------|----------|
+| `master`（默认） | Org-mode（`.org`） | Emacs / Denote 用户 |
+| `md` | Markdown（`.md`） | Obsidian / VSCode / Notion 等 Markdown 生态用户 |
