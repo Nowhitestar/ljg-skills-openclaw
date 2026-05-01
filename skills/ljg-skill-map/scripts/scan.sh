@@ -1,46 +1,62 @@
 #!/usr/bin/env bash
-# Scan all installed skills, extract frontmatter metadata
-# Output: JSON array
+# Scan installed OpenClaw skills and extract frontmatter metadata as JSON.
+set -euo pipefail
 
-SKILLS_DIR="${HOME}/.claude/skills"
+ROOTS=()
+[ -n "${OPENCLAW_WORKSPACE:-}" ] && ROOTS+=("$OPENCLAW_WORKSPACE/skills")
+ROOTS+=("$PWD/skills")
+ROOTS+=("$HOME/.openclaw/workspace/skills")
+ROOTS+=("$HOME/.openclaw/workspace/.agents/skills")
+ROOTS+=("$HOME/.agents/skills")
+ROOTS+=("$HOME/.openclaw/skills")
+
 first=1
 echo "["
+seen=""
 
-for skill_dir in "$SKILLS_DIR"/*/; do
-  skill_file="$skill_dir/SKILL.md"
-  [ -f "$skill_file" ] || continue
-  dir_name=$(basename "$skill_dir")
+json_escape() {
+  python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip("\n"), ensure_ascii=False)[1:-1])'
+}
 
-  # Strip \r then extract frontmatter
-  clean=$(tr -d '\r' < "$skill_file")
-  frontmatter=$(echo "$clean" | sed -n '/^---$/,/^---$/p' | sed '1d;$d')
-  [ -z "$frontmatter" ] && continue
+for root in "${ROOTS[@]}"; do
+  [ -d "$root" ] || continue
+  for skill_dir in "$root"/*/; do
+    [ -d "$skill_dir" ] || continue
+    skill_file="$skill_dir/SKILL.md"
+    [ -f "$skill_file" ] || continue
+    dir_name=$(basename "$skill_dir")
+    case " $seen " in *" $dir_name "*) continue;; esac
+    seen="$seen $dir_name"
 
-  name=$(echo "$frontmatter" | grep -m1 '^name:' | sed 's/^name:[[:space:]]*//' | tr -d '"')
-  version=$(echo "$frontmatter" | grep -m1 '^version:' | sed 's/^version:[[:space:]]*//' | tr -d '"')
-  invocable=$(echo "$frontmatter" | grep -m1 '^user_invocable:' | sed 's/^user_invocable:[[:space:]]*//' | tr -d '"')
+    clean=$(tr -d '\r' < "$skill_file")
+    frontmatter=$(printf '%s\n' "$clean" | awk 'BEGIN{n=0} /^---$/{n++; next} n==1{print} n==2{exit}')
+    [ -z "$frontmatter" ] && continue
 
-  # Extract description
-  desc_line=$(echo "$frontmatter" | grep -m1 '^description:')
-  desc_value=$(echo "$desc_line" | sed 's/^description:[[:space:]]*//')
+    name=$(echo "$frontmatter" | grep -m1 '^name:' | sed 's/^name:[[:space:]]*//' | tr -d '"')
+    version=$(echo "$frontmatter" | grep -m1 '^version:' | sed 's/^version:[[:space:]]*//' | tr -d '"' || true)
+    invocable=$(echo "$frontmatter" | grep -m1 '^user_invocable:' | sed 's/^user_invocable:[[:space:]]*//' | tr -d '"' || true)
+    desc_line=$(echo "$frontmatter" | grep -m1 '^description:' || true)
+    desc_value=$(echo "$desc_line" | sed 's/^description:[[:space:]]*//')
 
-  if [[ "$desc_value" == '>'* ]] || [[ "$desc_value" == '|'* ]]; then
-    desc=$(echo "$frontmatter" | sed -n '/^description:/,/^[a-z_]*:/{ /^description:/d; /^[a-z_]*:/d; p; }' | sed 's/^[[:space:]]*//' | tr -d '"' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
-  else
-    desc=$(echo "$desc_value" | tr -d '"')
-  fi
+    if [[ "$desc_value" == '>'* ]] || [[ "$desc_value" == '|'* ]]; then
+      desc=$(echo "$frontmatter" | sed -n '/^description:/,/^[a-zA-Z_][a-zA-Z0-9_-]*:/{ /^description:/d; /^[a-zA-Z_][a-zA-Z0-9_-]*:/d; p; }' | sed 's/^[[:space:]]*//' | tr -d '"' | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+    else
+      desc=$(echo "$desc_value" | tr -d '"')
+    fi
 
-  # Truncate: first sentence, max 80 chars
-  short=$(echo "$desc" | sed 's/\. .*//' | sed 's/。.*//' | cut -c1-80)
+    short=$(echo "$desc" | sed 's/\. .*//' | sed 's/。.*//' | cut -c1-100)
+    : "${name:=$dir_name}"
+    : "${version:=-}"
+    : "${invocable:=false}"
 
-  : "${name:=$dir_name}"
-  : "${version:=-}"
-  : "${invocable:=false}"
-
-  if (( first )); then first=0; else echo ","; fi
-  short_esc=$(echo "$short" | sed 's/\\/\\\\/g; s/"/\\"/g')
-  printf '  {"name":"%s","version":"%s","invocable":%s,"desc":"%s"}' \
-    "$name" "$version" "$invocable" "$short_esc"
+    if (( first )); then first=0; else echo ","; fi
+    printf '  {"name":"%s","version":"%s","invocable":%s,"root":"%s","desc":"%s"}' \
+      "$(printf '%s' "$name" | json_escape)" \
+      "$(printf '%s' "$version" | json_escape)" \
+      "$invocable" \
+      "$(printf '%s' "$root" | json_escape)" \
+      "$(printf '%s' "$short" | json_escape)"
+  done
 done
 
 echo ""

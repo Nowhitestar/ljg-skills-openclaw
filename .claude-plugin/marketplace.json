@@ -1,13 +1,13 @@
 {
-  "name": "ljg-skills",
-  "displayName": "LJG Skills Collection",
-  "description": "Personal Claude Code skills collection for paper reading, content casting, and writing workflows",
+  "name": "ljg-skills-openclaw",
+  "displayName": "LJG Skills for OpenClaw",
+  "description": "OpenClaw skill collection for paper reading, concept analysis, visual cards, writing, travel research, and structured thinking workflows",
   "version": "1.17.11",
   "owner": {
-    "name": "lijigang",
-    "url": "https://github.com/lijigang"
+    "name": "Nowhitestar",
+    "url": "https://github.com/Nowhitestar"
   },
-  "repository": "https://github.com/lijigang/ljg-skills",
+  "repository": "https://github.com/Nowhitestar/ljg-skills-openclaw",
   "license": "MIT",
   "keywords": [
     "skills",
@@ -25,8 +25,8 @@
   ],
   "plugins": [
     {
-      "name": "ljg-skills",
-      "description": "LJG's personal Claude Code skills collection",
+      "name": "ljg-skills-openclaw",
+      "description": "OpenClaw-ready LJG skills collection",
       "version": "1.17.11",
       "source": "./"
     }

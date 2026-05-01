@@ -4,6 +4,7 @@
 # 保留根目录文件
 !.gitignore
 !README.md
+!AGENTS.md
 !CLAUDE.md
 
 # 保留插件清单
@@ -28,3 +29,4 @@ __pycache__/
 
 # 本地插件配置
 .claude/*.local.md
+.openclaw/*.local.md

@@ -1,12 +1,17 @@
 {
-  "name": "ljg-skills",
+  "name": "ljg-skills-openclaw",
   "version": "1.17.11",
-  "description": "LJG's personal Claude Code skills collection - paper reading, content casting, writing tools",
+  "description": "OpenClaw skill collection for paper reading, concept analysis, visual cards, writing, travel research, and structured thinking workflows",
   "author": {
-    "name": "lijigang",
-    "url": "https://github.com/lijigang"
+    "name": "Nowhitestar",
+    "url": "https://github.com/Nowhitestar"
   },
-  "repository": "https://github.com/lijigang/ljg-skills",
-  "keywords": ["skills", "paper-reading", "content-casting", "writing"],
+  "repository": "https://github.com/Nowhitestar/ljg-skills-openclaw",
+  "keywords": [
+    "skills",
+    "paper-reading",
+    "content-casting",
+    "writing"
+  ],
   "skills": "./skills"
 }

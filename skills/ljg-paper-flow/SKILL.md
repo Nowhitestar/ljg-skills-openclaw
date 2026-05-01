@@ -11,7 +11,7 @@ version: "1.0.2"
 
 ## 模式
 
-**强制 NATIVE 模式。** 本 workflow 是纯 skill 管道（ljg-paper → ljg-card），不需要 Algorithm 的七步流程。直接按下方执行步骤调用 skill，不走 OBSERVE/THINK/PLAN/BUILD/EXECUTE/VERIFY/LEARN。
+**OpenClaw 原生 skill workflow。** 直接按下方步骤执行 `ljg-paper → ljg-card`，不套用额外的通用代理流程。
 
 ## 参数
 

@@ -1,14 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Usage: sync-push.sh <skill-name> <commit-message>
-# Syncs a local ljg-* skill to the repo and pushes.
-# Auto-bumps patch version in marketplace.json and plugin.json.
+# Syncs a local OpenClaw ljg-* skill from ~/.openclaw/skills into this repo and pushes.
+# Auto-bumps patch version in bundle metadata.
 
 set -euo pipefail
 
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <skill-name> <commit-message>" >&2
+  exit 2
+fi
+
 SKILL="$1"
 MSG="$2"
-REPO="$HOME/.claude/ljg-skills-repo"
-LOCAL="$HOME/.claude/skills/$SKILL"
+REPO="${LJG_SKILLS_REPO:-$HOME/.openclaw/workspace/ljg-skills-openclaw}"
+LOCAL="${OPENCLAW_SKILLS_DIR:-$HOME/.openclaw/skills}/$SKILL"
 TARGET="$REPO/skills/$SKILL"
 
 if [ ! -d "$LOCAL" ]; then
@@ -20,11 +25,12 @@ cd "$REPO"
 git pull --rebase --quiet
 rsync -av --delete --exclude='.git' "$LOCAL/" "$TARGET/"
 
-# Auto-bump patch version in plugin metadata
 bump_version() {
   local file="$1"
+  [ -f "$file" ] || return 0
   local current
   current=$(grep -m1 '"version"' "$file" | sed 's/.*"\([0-9]*\.[0-9]*\.[0-9]*\)".*/\1/')
+  [ -n "$current" ] || return 0
   local major minor patch
   major=$(echo "$current" | cut -d. -f1)
   minor=$(echo "$current" | cut -d. -f2)
@@ -34,11 +40,11 @@ bump_version() {
   echo "$new_version"
 }
 
-NEW_VER=$(bump_version ".claude-plugin/plugin.json")
-bump_version ".claude-plugin/marketplace.json" > /dev/null
+NEW_VER=$(bump_version ".claude-plugin/plugin.json" || true)
+bump_version ".claude-plugin/marketplace.json" >/dev/null || true
 
 git add "skills/$SKILL" .claude-plugin/
 git diff --cached --quiet && { echo "No changes to push."; exit 0; }
-git commit -m "$MSG (v$NEW_VER)"
+git commit -m "$MSG${NEW_VER:+ (v$NEW_VER)}"
 git push
-echo "Pushed $SKILL at collection v$NEW_VER"
+echo "Pushed $SKILL${NEW_VER:+ at collection v$NEW_VER}"

@@ -13,7 +13,7 @@ version: "1.0.0"
 
 ## 模式
 
-**强制 NATIVE 模式。** 本 workflow 是多 skill 管道（Research → ContentAnalysis → ljg-card），不走 Algorithm 七步流程。
+**OpenClaw 原生 skill workflow。** 直接按“研究 → 内容提炼 → ljg-card”的顺序执行，不套用额外的通用代理流程。
 
 ## 参数
 

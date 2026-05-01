@@ -1,95 +1,114 @@
-# ljg-skills
+# LJG Skills for OpenClaw
 
-我的 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 自定义技能集。
+A curated OpenClaw skill collection for paper reading, concept analysis, visual cards, writing, travel research, and structured thinking workflows.
 
-## 安装
+This fork converts the original Claude-oriented skill pack into an OpenClaw-ready collection while keeping the `.claude-plugin/` bundle metadata for compatibility with OpenClaw's bundle loader.
 
-使用 [skills CLI](https://github.com/vercel-labs/skills)（基于 `npx`）一行安装：
+## Safety audit summary
 
-```bash
-# 安装全部技能（全局，org-mode 格式）
-npx skills add lijigang/ljg-skills -g --all
+Current repository state was checked for common dangerous patterns and secrets.
 
-# 安装全部技能（Markdown 格式，适用于 Obsidian / VSCode / Notion 等）
-npx skills add lijigang/ljg-skills#md -g --all
+- No hardcoded API keys, OAuth tokens, private keys, or obvious credentials found.
+- No `curl | bash`, `sudo`, `rm -rf`, `eval`, or hidden destructive install step found.
+- The only dependency installer is `scripts/install.sh`, which copies skill folders into `~/.openclaw/skills` and optionally installs `ljg-card` dependencies with `npm install` + `npx playwright install chromium`.
+- `ljg-card` contains a Node/Playwright screenshot workflow. Treat third-party npm dependencies as normal supply-chain risk; review `skills/ljg-card/package-lock.json` before use in high-security environments.
 
-# 安装单个技能
-npx skills add lijigang/ljg-skills -g --skill ljg-card
+## Install
 
-# 安装单个技能（Markdown 格式）
-npx skills add lijigang/ljg-skills#md -g --skill ljg-card
-
-# 安装多个指定技能
-npx skills add lijigang/ljg-skills -g --skill ljg-card --skill ljg-learn
-
-# 查看仓库中有哪些技能
-npx skills add lijigang/ljg-skills -l
-```
-
-**参数说明：**
-
-| 参数 | 作用 |
-|------|------|
-| `-g` | 全局安装到 `~/.claude/skills/`（推荐）。不加则装到当前项目 `.claude/skills/` |
-| `--skill <name>` | 指定安装某个技能，可重复使用 |
-| `--all` | 安装仓库内全部技能 |
-| `#md` | 从 `md` branch 安装 Markdown 格式版本（默认为 org-mode） |
-| `-l` | 仅列出可用技能，不安装 |
-
-### ljg-card 依赖
-
-`ljg-card` 依赖 Playwright 截图，安装后需额外执行：
+### Option A: clone and install into shared OpenClaw skills
 
 ```bash
-cd ~/.claude/skills/ljg-card && npm install && npx playwright install chromium
+git clone https://github.com/Nowhitestar/ljg-skills-openclaw.git
+cd ljg-skills-openclaw
+bash scripts/install.sh
+openclaw gateway restart
 ```
 
-### 替代方式：git clone
+The installer copies every `skills/ljg-*` directory to:
+
+```text
+~/.openclaw/skills/
+```
+
+Then start a new OpenClaw session or restart the gateway so skills are reloaded.
+
+### Option B: install as an OpenClaw-compatible bundle
+
+OpenClaw can load Claude-compatible bundles, so this also works:
 
 ```bash
-# org-mode 版本
-git clone https://github.com/lijigang/ljg-skills.git ~/.claude/plugins/ljg-skills
-
-# Markdown 版本
-git clone -b md https://github.com/lijigang/ljg-skills.git ~/.claude/plugins/ljg-skills
+git clone https://github.com/Nowhitestar/ljg-skills-openclaw.git
+openclaw plugins install ./ljg-skills-openclaw
+openclaw gateway restart
 ```
 
-## 技能
+For day-to-day use, Option A is simpler and transparent.
 
-| 技能 | 说明 |
-|------|------|
-| **ljg-card** | 内容铸卡 — 将内容转为 PNG 视觉卡片（长图 `-l`、信息图 `-i`、多卡 `-m`、视觉笔记 `-v`、漫画 `-c`、白板 `-w`、大字 `-b`） |
-| **ljg-learn** | 概念解剖 — 从八个方向切开一个概念（历史、辩证、现象、语言、形式、存在、美感、元反思），压成一句顿悟 |
-| **ljg-paper** | 论文阅读 — 为非学术人士提取论文核心想法，重理解不重批判 |
-| **ljg-paper-river** | 论文溯源 — 倒读法，递归挖前序论文（最多5层）+ 最新进展，从源头讲述问题演化史 |
-| **ljg-plain** | 白话引擎 — 把任何内容改写到聪明的十二岁小孩也能懂 |
-| **ljg-rank** | 降秩引擎 — 给一个领域，找出背后不可再少的独立生成器 |
-| **ljg-think** | 追本之箭 — 给一个观点或现象，纵向深钻到不可再分的本质 |
-| **ljg-word** | 单词精通 — 深度拆解一个英语单词的核心语义和顿悟时刻 |
-| **ljg-writes** | 写作引擎 — 像手术刀剖开一个观点，一层层剥到底。1000-1500 字 |
-| **ljg-invest** | 投资分析 — 核心判断项目是否是一台「秩序创造机器」 |
-| **ljg-read** | 伴读 — 陪你读任何文本，英文三层翻译（信达雅）+ 结构标注 + 深度提问 + 跨领域旁逸 |
-| **ljg-relationship** | 关系分析 — 五层结构诊断 + 精神分析，通过对话引导帮用户"看见"关系真实结构 |
-| **ljg-roundtable** | 圆桌讨论 — 求真导向的结构化多人辩证对话，每轮生成 ASCII 思考框架图 |
-| **ljg-travel** | 旅行研究 — 输入城市名，生成深度文化研究文档（org-mode）+ 便携卡片（PNG） |
-| **ljg-skill-map** | 技能地图 — 扫描所有已安装技能，渲染可视化总览 |
-| **ljg-present** | 演讲铸造器 — 默认高桥流（一页一关键词、奶白底墨字）；`-s` 标语流（VACAT/BIG STUDIOS 风：黑红双色块、ultra-bold、完整断言句撑屏）|
+## Verify
 
+```bash
+openclaw skills list | grep ljg
+openclaw skills check --verbose | grep ljg
+bash ~/.openclaw/skills/ljg-skill-map/scripts/scan.sh
+```
 
-## 工作流
+## Skills
 
-工作流将多个技能串联为一个命令。
+| Skill | Use it for |
+|---|---|
+| `ljg-card` | Cast content into PNG visual cards: long card, infograph, multi-card, sketchnote, comic, whiteboard, big-font attachment card |
+| `ljg-learn` | Deconstruct a concept through eight dimensions and compress it into an insight |
+| `ljg-paper` | Read a research paper for ideas rather than academic critique |
+| `ljg-paper-river` | Trace a paper's intellectual lineage and problem evolution |
+| `ljg-paper-flow` | Read a paper and generate a visual sketchnote/card in one workflow |
+| `ljg-plain` | Rewrite content so a smart 12-year-old can understand it |
+| `ljg-rank` | Reduce a domain to its irreducible generators |
+| `ljg-think` | Drill vertically into the root of an idea, problem, or phenomenon |
+| `ljg-word` | Deeply master an English word through semantic analysis |
+| `ljg-word-flow` | Analyze English words and cast them into infograph cards |
+| `ljg-writes` | Write a 1000–1500 word critical essay that peels an idea layer by layer |
+| `ljg-invest` | Evaluate whether a project is an “order-generating machine” |
+| `ljg-read` | Guided reading companion for books, essays, articles, papers, and news |
+| `ljg-relationship` | Diagnose relationship issues through structure + psychoanalytic depth |
+| `ljg-roundtable` | Run a structured, truth-seeking multi-perspective roundtable discussion |
+| `ljg-travel` | Produce deep cultural travel research for museums and ancient architecture |
+| `ljg-present` | Generate Takahashi-style or manifesto-style HTML slides |
+| `ljg-skill-map` | Scan installed OpenClaw skills and render a visual map |
 
-| 工作流 | 技能链 | 说明 |
-|--------|--------|------|
-| **ljg-paper-flow** | ljg-paper → ljg-card -c | 读论文 + 做漫画卡片一气呵成 |
-| **ljg-word-flow** | ljg-word → ljg-card -i | 单词深度分析 + 信息图卡片一气呵成 |
+## Examples
 
-## 输出格式
+Ask OpenClaw naturally:
 
-技能提供两种输出格式，通过不同 branch 安装，功能完全相同：
+```text
+用 ljg-paper 读这篇论文：https://arxiv.org/abs/xxxx.xxxxx
+把这段内容用 ljg-plain 说人话
+用 ljg-card -i 把这篇文章做成信息图
+用 ljg-word 解释 serendipity
+圆桌讨论：AI 是否拥有真正创造力？
+旅行研究：西安博物馆和古建路线
+```
 
-| Branch | 格式 | 适用场景 |
-|--------|------|----------|
-| `master`（默认） | Org-mode（`.org`） | Emacs / Denote 用户 |
-| `md` | Markdown（`.md`） | Obsidian / VSCode / Notion 等 Markdown 生态用户 |
+Most skills are instruction-only and run inside the agent. `ljg-card` and `ljg-present` generate local HTML/PNG artifacts, usually under `~/Downloads/`.
+
+## ljg-card dependency notes
+
+`ljg-card` uses Playwright to render HTML templates into PNG files. `scripts/install.sh` installs its dependencies automatically when `npm` is available.
+
+Manual install:
+
+```bash
+cd ~/.openclaw/skills/ljg-card
+npm install
+npx playwright install chromium
+```
+
+## Development
+
+- Add or edit skills under `skills/ljg-*`.
+- Keep `SKILL.md` concise; put long mode-specific details in `references/`.
+- Do not commit generated outputs, `node_modules/`, secrets, or personal config.
+- Test with `openclaw skills list`, `openclaw skills check`, and a fresh OpenClaw session.
+
+## License
+
+MIT. Original skill ideas/content credit: lijigang/ljg-skills.
